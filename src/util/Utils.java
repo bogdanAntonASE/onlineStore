@@ -72,7 +72,8 @@ public final class Utils {
             System.out.print("11. Export purchases between dates.              ");
             System.out.println("12. Make a user ADMIN.");
             System.out.print("13. Add products to database.             ");
-            System.out.println("14. Restock an existing product.        ");
+            System.out.print("14. Restock an existing product.                 ");
+            System.out.println("15. Remove product from store.");
         }
 
         int option = scanner.nextInt();
@@ -110,6 +111,7 @@ public final class Utils {
             case 12 -> DatabaseService.makeAUserAdmin(scanner, knownUsers);
             case 13 -> menuPayload.setProducts(DatabaseService.addNewProduct(scanner, products));
             case 14 -> DatabaseService.addNewStockForProduct(scanner, products);
+            case 15 -> menuPayload.setProducts(DatabaseService.removeProductFromStore(scanner, products));
             default -> throw new InvalidAnswerException("Invalid answer!");
         }
         return menuPayload;
@@ -130,16 +132,19 @@ public final class Utils {
         }
     }
 
-    public static void displayProducts(Product[] products) {
+    public static boolean displayProducts(Product[] products) {
         if (products.length > 0) {
             System.out.println("The available products:");
             for (Product product: products) {
                 System.out.println(product);
             }
+            System.out.println();
+            return false;
         } else {
             System.out.println("No products on stock.");
+            System.out.println();
+            return true;
         }
-        System.out.println();
     }
 
     private static LocalDate handleReadDate(Scanner scanner, String fromTo) throws InvalidAnswerException {

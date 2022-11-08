@@ -13,12 +13,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+
+/**
+ * Service to read/write from pseudo-database (binary and text files)
+ * @author Anton Bogdan
+ * @version 1.0
+ */
 public class DatabaseService {
 
     private static final String USERS_DB = "users.db";
     private static final String PRODUCTS_DB = "products.db";
     public static final String PURCHASES_DB = "purchases.txt";
 
+    /**
+     * Stores users to binary file
+     * @param users -> the list of users at the end of the session
+     * @param isAdmin -> tells us if the current is admin or not
+     */
     public static void persistData(List<User> users, boolean isAdmin) {
         if (isAdmin) {
             System.out.println("---Persisting users to database " + USERS_DB  + "...");
@@ -40,6 +51,10 @@ public class DatabaseService {
         }
     }
 
+    /**
+     * Initializes the session list of users from binary file
+     * @param users -> the list of users to be populated
+     */
     public static void initializeUsersList(List<User> users) throws PersistException {
         File database = new File(USERS_DB);
         if (database.isFile() && database.length() != 0) {
@@ -57,6 +72,12 @@ public class DatabaseService {
         }
     }
 
+    /**
+     * Initializes the session array of products from binary file
+     * @param products already existing products, if any
+     * @return computed array of products
+     * @throws PersistException
+     */
     public static Product[] initializeProductsArray(Product[] products) throws PersistException {
         File database = new File(PRODUCTS_DB);
         if (database.isFile() && database.length() != 0) {
@@ -70,6 +91,7 @@ public class DatabaseService {
                     productTemp.setIngredients(product.getIngredients());
                     productTemp.setDescription(product.getDescription());
                     productTemp.setAvailableQuantity(product.getAvailableQuantity());
+                    productTemp.setId(product.getId());
 
                     products = enlargeArrayAndAddProduct(products, productTemp);
                 }
@@ -82,6 +104,13 @@ public class DatabaseService {
         return products;
     }
 
+    /**
+     * Adding new product to the array of products
+     * @param scanner Scanner instance
+     * @param products already existing products, if any
+     * @return changed array of products
+     * @throws InvalidAnswerException
+     */
     public static Product[] addNewProduct(Scanner scanner, Product[] products) throws InvalidAnswerException {
         Product product = new Product();
         System.out.println("Please insert the name of the product (at least 3 letters, no numbers allowed):");
@@ -119,6 +148,11 @@ public class DatabaseService {
         return enlargeArrayAndAddProduct(products, product);
     }
 
+    /**
+     * Updates stocks after a purchase is made
+     * @param products already existing products, if any
+     * @param shoppingCart user's shopping cart
+     */
     public static void updateStocks(Product[] products, List<Product> shoppingCart) {
         for (Product product : products) {
             shoppingCart.forEach(productInCart -> {
@@ -129,23 +163,11 @@ public class DatabaseService {
         }
     }
 
-    private static Product[] enlargeArrayAndAddProduct(Product[] products, Product product) {
-        Product[] tempProduct = new Product[products.length];
-        int k = 0;
-        for (Product product1: products) {
-            tempProduct[k++] = product1;
-        }
-        products = new Product[tempProduct.length + 1];
-        k = 0;
-        for (Product product1: tempProduct) {
-            products[k++] = product1;
-        }
-        products[products.length - 1] = product;
-        return products;
-    }
-
-    private DatabaseService() {}
-
+    /**
+     * Make a user admin based on current user entries
+     * @param scanner Scanner instance
+     * @param users users list present on session
+     */
     public static void makeAUserAdmin(Scanner scanner, List<User> users) {
         System.out.println("Enter the username for who you want to provide privileges:");
         String username = scanner.next();
@@ -162,6 +184,11 @@ public class DatabaseService {
         user.setAdmin(true);
     }
 
+    /**
+     * Persists array of products in binary file
+     * @param products already existing products, if any
+     * @param isAdmin flag if user is admin
+     */
     public static void persistProducts(Product[] products, boolean isAdmin) {
         if (isAdmin) {
             System.out.println("---Persisting products to database " + PRODUCTS_DB + "...");
@@ -180,8 +207,11 @@ public class DatabaseService {
         }
     }
 
-    public static void savePurchase() {}
-
+    /**
+     * Add new stock for a product based on user input
+     * @param scanner Scanner instance
+     * @param products already existing products, if any
+     */
     public static void addNewStockForProduct(Scanner scanner, Product[] products) {
         System.out.println("---Available stocks:");
         Utils.displayProducts(products);
@@ -205,6 +235,12 @@ public class DatabaseService {
         }
     }
 
+    /**
+     * Add a new purchase to the array
+     * @param sessionPurchases already existing purchases, if any
+     * @param purchase purchase to be added to the array
+     * @return new array of purchases
+     */
     public static PurchasePayload[] enlargeArrayAndAddPurchase(PurchasePayload[] sessionPurchases, PurchasePayload purchase) {
         PurchasePayload[] tempPurchases = new PurchasePayload[sessionPurchases.length];
         int k = 0;
@@ -220,6 +256,11 @@ public class DatabaseService {
         return sessionPurchases;
     }
 
+    /**
+     * Persist array of purchases into text file
+     * @param sessionPurchases already existing purchases, if any
+     * @param isAdmin flag if user is admin
+     */
     public static void persistPurchases(PurchasePayload[] sessionPurchases, boolean isAdmin) {
         if (isAdmin) {
             System.out.println("---Persisting purchases to textfile " + PURCHASES_DB + "...");
@@ -235,4 +276,52 @@ public class DatabaseService {
             exception.printStackTrace();
         }
     }
+
+    public static Product[] removeProductFromStore(Scanner scanner, Product[] products) {
+        boolean isEmpty = Utils.displayProducts(products);
+        if (isEmpty) return products;
+
+        System.out.println("Please select what product you would like to remove from the store(write the id corresponding):");
+        int option = scanner.nextInt();
+
+        Optional<Product> optionalProduct = Arrays.stream(products)
+                .filter(product -> product.getId() == option)
+                .findFirst();
+
+        if (optionalProduct.isEmpty()) {
+            System.out.println("The product provided does not exist in our shop.");
+            return products;
+        }
+
+        Product[] result = new Product[]{};
+        for (Product product: products) {
+            if (product.getId() != option) {
+                result = enlargeArrayAndAddProduct(result, product);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Add a new product to the array
+     * @param products already existing products, if any
+     * @param product product to be added to the array
+     * @return new array of products
+     */
+    private static Product[] enlargeArrayAndAddProduct(Product[] products, Product product) {
+        Product[] tempProduct = new Product[products.length];
+        int k = 0;
+        for (Product product1: products) {
+            tempProduct[k++] = product1;
+        }
+        products = new Product[tempProduct.length + 1];
+        k = 0;
+        for (Product product1: tempProduct) {
+            products[k++] = product1;
+        }
+        products[products.length - 1] = product;
+        return products;
+    }
+
+    private DatabaseService() {}
 }
