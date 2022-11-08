@@ -23,6 +23,7 @@ public class Main {
     private static final List<Product> basket = new ArrayList<>();
     private static PurchasePayload[] sessionPurchases = new PurchasePayload[]{};
     private static boolean isWillingToContinue = true;
+    private static boolean isAdmin = true;
 
     static {
         users = new ArrayList<>();
@@ -38,21 +39,30 @@ public class Main {
             User user;
             try {
                 user = Utils.displayLoginScreen(scanner, users);
+                isAdmin = user.isAdmin();
             } catch (BaseException exception) {
-                System.out.println("Exception occurred, proceeding to persist data: \n" + exception.getMessage());
+                System.out.println("Exception occurred, leading you back to the main menu: " + exception.getMessage());
+                continue;
+            } catch (Exception exception) {
+                System.out.println("Exception occurred, proceeding to persist data. Stacktrace: \n" + exception.getMessage());
                 break;
             }
+
             boolean isLoggedIn = true;
 
             try {
                 while (isLoggedIn) {
-                    MenuPayload menuPayload = Utils.displayMenu(scanner, user, products, users, basket, sessionPurchases);
-                    isLoggedIn = menuPayload.isLoggedIn();
-                    products = menuPayload.getProducts();
-                    sessionPurchases = menuPayload.getSessionPurchases();
+                    try {
+                        MenuPayload menuPayload = Utils.displayMenu(scanner, user, products, users, basket, sessionPurchases);
+                        isLoggedIn = menuPayload.isLoggedIn();
+                        products = menuPayload.getProducts();
+                        sessionPurchases = menuPayload.getSessionPurchases();
+                    } catch (BaseException exception) {
+                        System.out.println("Exception occurred... leading you back to main menu: " + exception.getMessage());
+                    }
                 }
-            } catch (BaseException exception) {
-                System.out.println("Exception occurred, proceeding to persist data: \n" + exception.getMessage());
+            } catch (Exception exception) {
+                System.out.println("Exception occurred, proceeding to persist data. Stacktrace: \n" + exception.getMessage());
                 break;
             }
 
@@ -61,8 +71,8 @@ public class Main {
         }
 
         System.out.println("Closing the app...");
-        DatabaseService.persistData(users);
-        DatabaseService.persistProducts(products);
-        DatabaseService.persistPurchases(sessionPurchases);
+        DatabaseService.persistData(users, isAdmin);
+        DatabaseService.persistProducts(products, isAdmin);
+        DatabaseService.persistPurchases(sessionPurchases, isAdmin);
     }
 }

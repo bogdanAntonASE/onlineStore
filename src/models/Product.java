@@ -79,7 +79,7 @@ public class Product extends BaseDto implements Serializable {
                 ", name='" + name + '\'' +
                 ", price=" + DECIMAL_FORMAT.format(price) +
                 ", description='" + description + '\'' +
-                ", availableQuantity=" + availableQuantity +
+                ", availableQuantity=" + (availableQuantity == 0 ? "out of stock" : availableQuantity + "pcs") +
                 ", ingredients=" + Arrays.toString(ingredients) +
                 '}';
     }

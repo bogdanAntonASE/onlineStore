@@ -25,9 +25,10 @@ public final class RegisterService {
         int noOfTries = 3;
         int k = 0;
 
-        while (k++ != noOfTries) {
+        while (k++ < noOfTries) {
             if (!USER_PATTERN.matcher(userName).matches()) {
-                System.out.println("Your username does not have at least 3 characters... Try again:");
+                System.out.println("Your username does not have at least 3 characters... Try again " +
+                        "(try " + k + " out of " + noOfTries + "):");
                 userName = scanner.next();
                 continue;
             }
@@ -41,8 +42,9 @@ public final class RegisterService {
                 result.setUserName(userName);
                 break;
             } else {
+                System.out.println("This username is already taken, please choose another one. " +
+                        "(try " + k + " out of " + noOfTries + "):");
                 userName = scanner.next();
-                System.out.println("This username is already taken, please choose another one.");
             }
         }
 
@@ -58,9 +60,10 @@ public final class RegisterService {
 
         //String password = String.valueOf(console.readPassword());
         String password = scanner.next();
-        while (k++ != noOfTries) {
+        while (k++ < noOfTries) {
             if (!PASSWORD_PATTERN.matcher(password).matches()) {
-                System.out.println("Wrong format. At least 8 chars (one number and a capital letter).");
+                System.out.println("Wrong format. At least 8 chars (one number and a capital letter)." +
+                        " (try " + k + " out of " + noOfTries + ")");
                 password = scanner.next();
             } else {
                 String encryptedPassword = EncryptionService.encrypt(password.toCharArray());
@@ -69,7 +72,7 @@ public final class RegisterService {
             }
         }
 
-        if (k == noOfTries && user.getPassword().isEmpty()) {
+        if (k == noOfTries + 1 && user.getPassword().isEmpty()) {
             throw new RegistrationException("You failed to pick a correct password," +
                     " respectively at least 8 chars (one number and a capital letter).");
         }

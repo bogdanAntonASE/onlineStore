@@ -19,7 +19,10 @@ public class DatabaseService {
     private static final String PRODUCTS_DB = "products.db";
     public static final String PURCHASES_DB = "purchases.txt";
 
-    public static void persistData(List<User> users) {
+    public static void persistData(List<User> users, boolean isAdmin) {
+        if (isAdmin) {
+            System.out.println("Persisting users to database " + USERS_DB  + "...");
+        }
 
         try (ObjectOutputStream outputStream =
                      new ObjectOutputStream(
@@ -118,9 +121,11 @@ public class DatabaseService {
 
     public static void updateStocks(Product[] products, List<Product> basket) {
         for (Product product : products) {
-            if (basket.contains(product)) {
-                product.setAvailableQuantity(product.getAvailableQuantity() - 1);
-            }
+            basket.forEach(productInCart -> {
+                if (productInCart.getId() == product.getId()) {
+                    product.setAvailableQuantity(product.getAvailableQuantity() - 1);
+                }
+            });
         }
     }
 
@@ -157,7 +162,10 @@ public class DatabaseService {
         user.setAdmin(true);
     }
 
-    public static void persistProducts(Product[] products) {
+    public static void persistProducts(Product[] products, boolean isAdmin) {
+        if (isAdmin) {
+            System.out.println("Persisting products to database " + PRODUCTS_DB + "...");
+        }
         try (ObjectOutputStream outputStream =
                      new ObjectOutputStream(new FileOutputStream(PRODUCTS_DB))) {
             Arrays.stream(products).forEach(product -> {
@@ -212,7 +220,10 @@ public class DatabaseService {
         return sessionPurchases;
     }
 
-    public static void persistPurchases(PurchasePayload[] sessionPurchases) {
+    public static void persistPurchases(PurchasePayload[] sessionPurchases, boolean isAdmin) {
+        if (isAdmin) {
+            System.out.println("Persisting purchases to textfile " + PURCHASES_DB + "...");
+        }
         try(FileWriter fileWriter = new FileWriter(PURCHASES_DB, true)) {
             for (PurchasePayload purchasePayload: sessionPurchases) {
 

@@ -89,6 +89,9 @@ public final class Utils {
             case 8 -> menuPayload.setLoggedIn(false);
             case 9 -> {
                 boolean isPasswordChanged = RegisterService.changePassword(scanner, user);
+                if (!isPasswordChanged) {
+                    System.out.println("Unfortunately, the password inserted is wrong... You are going to be logged out.");
+                }
                 menuPayload.setLoggedIn(isPasswordChanged);
             }
             case 10 -> displayUsers(knownUsers);
@@ -154,7 +157,8 @@ public final class Utils {
     private static User displayNewUserScreen(Scanner scanner, List<User> knownUsers) {
         User user = RegisterService.pickUserName(scanner, knownUsers);
         if (user == null) {
-            throw new RegistrationException("Chosen usernames already persent in database.");
+            throw new RegistrationException("Chosen usernames already persent in database " +
+                    "or the naming rules were not respected.");
         }
 
         RegisterService.pickPassword(scanner, user);
