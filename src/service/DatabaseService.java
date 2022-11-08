@@ -21,7 +21,7 @@ public class DatabaseService {
 
     public static void persistData(List<User> users, boolean isAdmin) {
         if (isAdmin) {
-            System.out.println("Persisting users to database " + USERS_DB  + "...");
+            System.out.println("---Persisting users to database " + USERS_DB  + "...");
         }
 
         try (ObjectOutputStream outputStream =
@@ -119,9 +119,9 @@ public class DatabaseService {
         return enlargeArrayAndAddProduct(products, product);
     }
 
-    public static void updateStocks(Product[] products, List<Product> basket) {
+    public static void updateStocks(Product[] products, List<Product> shoppingCart) {
         for (Product product : products) {
-            basket.forEach(productInCart -> {
+            shoppingCart.forEach(productInCart -> {
                 if (productInCart.getId() == product.getId()) {
                     product.setAvailableQuantity(product.getAvailableQuantity() - 1);
                 }
@@ -155,7 +155,7 @@ public class DatabaseService {
                 .findFirst();
 
         if (optionalUser.isEmpty()) {
-            System.out.println("User not found in database");
+            System.out.println("---User not found in database");
             return;
         }
         User user = optionalUser.get();
@@ -164,7 +164,7 @@ public class DatabaseService {
 
     public static void persistProducts(Product[] products, boolean isAdmin) {
         if (isAdmin) {
-            System.out.println("Persisting products to database " + PRODUCTS_DB + "...");
+            System.out.println("---Persisting products to database " + PRODUCTS_DB + "...");
         }
         try (ObjectOutputStream outputStream =
                      new ObjectOutputStream(new FileOutputStream(PRODUCTS_DB))) {
@@ -183,16 +183,16 @@ public class DatabaseService {
     public static void savePurchase() {}
 
     public static void addNewStockForProduct(Scanner scanner, Product[] products) {
-        System.out.println("Available stocks:");
+        System.out.println("---Available stocks:");
         Utils.displayProducts(products);
 
-        System.out.println("Choose a product to restock... (type in the product's id)");
+        System.out.println("---Choose a product to restock... (type in the product's id)");
         int option = scanner.nextInt();
         boolean found = false;
 
         for (Product product: products) {
             if (product.getId() == option) {
-                System.out.println("Please provide the quantity:");
+                System.out.println("---Please provide the quantity:");
                 int newQuantity = scanner.nextInt();
                 product.setAvailableQuantity(product.getAvailableQuantity() + newQuantity);
                 found = true;
@@ -201,7 +201,7 @@ public class DatabaseService {
         }
 
         if (!found) {
-            System.out.println("Product with id " + option + " not found!");
+            System.out.println("---Product with id " + option + " not found!");
         }
     }
 
@@ -222,7 +222,7 @@ public class DatabaseService {
 
     public static void persistPurchases(PurchasePayload[] sessionPurchases, boolean isAdmin) {
         if (isAdmin) {
-            System.out.println("Persisting purchases to textfile " + PURCHASES_DB + "...");
+            System.out.println("---Persisting purchases to textfile " + PURCHASES_DB + "...");
         }
         try(FileWriter fileWriter = new FileWriter(PURCHASES_DB, true)) {
             for (PurchasePayload purchasePayload: sessionPurchases) {

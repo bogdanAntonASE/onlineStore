@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-public final class BasketService {
+public final class ShoppingCartService {
 
-    private BasketService() {}
+    private ShoppingCartService() {}
 
-    public static void addProductToBasket(Scanner scanner, Product[] products, List<Product> basket) {
+    public static void addProductToShoppingCart(Scanner scanner, Product[] products, List<Product> shoppingCart) {
         System.out.println("Please select what products you would like to buy (write the id corresponding):");
         int option = scanner.nextInt();
         int noOfTries = 3;
@@ -31,7 +31,7 @@ public final class BasketService {
             } else {
                 Product product = optionalProduct.get();
                 if (product.getAvailableQuantity() > 0) {
-                    basket.add(optionalProduct.get());
+                    shoppingCart.add(optionalProduct.get());
                 } else {
                     System.out.println("Product is out of stock!");
                 }
@@ -40,19 +40,21 @@ public final class BasketService {
         }
     }
 
-    public static void removeProductFromBasket(Scanner scanner, List<Product> basket) {
-        Utils.displayBasket(basket);
-        System.out.println("Please select what product you would like to remove from basket (write the id corresponding):");
+    public static void removeProductFromShoppingCart(Scanner scanner, List<Product> shoppingCart) {
+        boolean isEmpty = Utils.displayShoppingCart(shoppingCart);
+        if (isEmpty) return;
+
+        System.out.println("Please select what product you would like to remove from shopping cart (write the id corresponding):");
         int option = scanner.nextInt();
 
-        Optional<Product> optionalProduct = basket.stream()
+        Optional<Product> optionalProduct = shoppingCart.stream()
                 .filter(product -> product.getId() == option)
                 .findFirst();
 
         if (optionalProduct.isEmpty()) {
-            System.out.println("The product provided does not exist in your basket.");
+            System.out.println("The product provided does not exist in your shopping cart.");
             return;
         }
-        basket.remove(optionalProduct.get());
+        shoppingCart.remove(optionalProduct.get());
     }
 }

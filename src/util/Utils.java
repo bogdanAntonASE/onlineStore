@@ -10,7 +10,7 @@ import models.Product;
 import models.PurchasePayload;
 import models.User;
 import service.BankService;
-import service.BasketService;
+import service.ShoppingCartService;
 import service.DatabaseService;
 import service.ExportService;
 import service.RegexValidator;
@@ -49,7 +49,7 @@ public final class Utils {
                                           User user,
                                           Product[] products,
                                           List<User> knownUsers,
-                                          List<Product> basket,
+                                          List<Product> shoppingCart,
                                           PurchasePayload[] sessionPurchases) throws InvalidAnswerException, ExportException, RegistrationException {
         MenuPayload menuPayload = new MenuPayload();
         menuPayload.setLoggedIn(true);
@@ -57,22 +57,22 @@ public final class Utils {
         menuPayload.setSessionPurchases(sessionPurchases);
 
         System.out.println("Please select one of the following options (must be a number):");
-        System.out.println("1. Display available products.");
-        System.out.println("2. Add a product to basket.");
-        System.out.println("3. Display basket.");
-        System.out.println("4. Remove a product from basket.");
-        System.out.println("5. Go to checkout.");
+        System.out.print("1. Display available products.            ");
+        System.out.print("2. Add a product to shopping cart.               ");
+        System.out.println("3. Display shopping cart.");
+        System.out.print("4. Remove a product from shopping cart.   ");
+        System.out.print("5. Go to checkout.                               ");
         System.out.println("6. Add funds.");
-        System.out.println("7. Display user information.");
-        System.out.println("8. Logout.");
+        System.out.print("7. Display user information.              ");
+        System.out.print("8. Logout.                                       ");
         System.out.println("9. Change Password.");
 
         if (user.isAdmin()) {
-            System.out.println("10. Display all users.");
-            System.out.println("11. Export purchases between dates.");
+            System.out.print("10. Display all users.                    ");
+            System.out.print("11. Export purchases between dates.              ");
             System.out.println("12. Make a user ADMIN.");
-            System.out.println("13. Add products to database.");
-            System.out.println("14. Restock an existing product.");
+            System.out.print("13. Add products to database.             ");
+            System.out.println("14. Restock an existing product.        ");
         }
 
         int option = scanner.nextInt();
@@ -80,15 +80,15 @@ public final class Utils {
             case 1 -> displayProducts(products);
             case 2 -> {
                 displayProducts(products);
-                BasketService.addProductToBasket(scanner, products, basket);
+                ShoppingCartService.addProductToShoppingCart(scanner, products, shoppingCart);
             }
-            case 3 -> displayBasket(basket);
-            case 4 -> BasketService.removeProductFromBasket(scanner, basket);
+            case 3 -> displayShoppingCart(shoppingCart);
+            case 4 -> ShoppingCartService.removeProductFromShoppingCart(scanner, shoppingCart);
             case 5 -> {
-                displayBasket(basket);
-                if (!basket.isEmpty()) {
+                displayShoppingCart(shoppingCart);
+                if (!shoppingCart.isEmpty()) {
                     BankService.checkout(scanner,
-                            user, basket, products, sessionPurchases, menuPayload);
+                            user, shoppingCart, products, sessionPurchases, menuPayload);
                 }
             }
             case 6 -> BankService.addFunds(scanner, user);
@@ -115,12 +115,18 @@ public final class Utils {
         return menuPayload;
     }
 
-    public static void displayBasket(List<Product> basket) {
-        if (!basket.isEmpty()) {
-            System.out.println("Your basket:");
-            basket.forEach(System.out::println);
+    public static boolean displayShoppingCart(List<Product> shoppingCart) {
+        if (!shoppingCart.isEmpty()) {
+            System.out.println("Your shopping cart:");
+            shoppingCart.forEach(System.out::println);
+
+            System.out.println();
+            return false;
         } else {
-            System.out.println("Your basket is empty!");
+            System.out.println("Your shopping cart is empty!");
+
+            System.out.println();
+            return true;
         }
     }
 
@@ -133,6 +139,7 @@ public final class Utils {
         } else {
             System.out.println("No products on stock.");
         }
+        System.out.println();
     }
 
     private static LocalDate handleReadDate(Scanner scanner, String fromTo) throws InvalidAnswerException {
@@ -152,6 +159,7 @@ public final class Utils {
 
     private static void displayUsers(List<User> users) {
         users.forEach(System.out::println);
+        System.out.println();
     }
 
     private static boolean isNewUser(Scanner scanner) throws InvalidAnswerException {

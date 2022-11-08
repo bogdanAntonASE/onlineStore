@@ -1,8 +1,5 @@
 import exceptions.BaseException;
 import exceptions.InvalidAnswerException;
-import exceptions.RegistrationException;
-import exceptions.UserNotFoundException;
-import exceptions.WrongPasswordException;
 import models.MenuPayload;
 import models.Product;
 import models.PurchasePayload;
@@ -11,7 +8,6 @@ import service.DatabaseService;
 import service.RegexValidator;
 import util.Utils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -21,7 +17,7 @@ public class Main {
     private static final List<User> users;
     private static Product[] products = new Product[]{};
     private static final Scanner scanner = new Scanner(System.in);
-    private static final List<Product> basket = new ArrayList<>();
+    private static final List<Product> shoppingCart = new ArrayList<>();
     private static PurchasePayload[] sessionPurchases = new PurchasePayload[]{};
     private static boolean isWillingToContinue = true;
     private static boolean isAdmin = true;
@@ -55,7 +51,7 @@ public class Main {
             try {
                 while (isLoggedIn) {
                     try {
-                        MenuPayload menuPayload = Utils.displayMenu(scanner, user, products, users, basket, sessionPurchases);
+                        MenuPayload menuPayload = Utils.displayMenu(scanner, user, products, users, shoppingCart, sessionPurchases);
                         isLoggedIn = menuPayload.isLoggedIn();
                         products = menuPayload.getProducts();
                         sessionPurchases = menuPayload.getSessionPurchases();
