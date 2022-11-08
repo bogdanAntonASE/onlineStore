@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 
 public final class ExportService {
 
-    public static void exportPayloadsForPeriod(LocalDate from, LocalDate to) {
+    public static void exportPayloadsForPeriod(LocalDate from, LocalDate to) throws ExportException {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         String exportFileName = "purchases" + from.format(dateTimeFormatter) + "to" + to.format(dateTimeFormatter) + ".txt";
 

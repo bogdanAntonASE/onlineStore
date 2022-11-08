@@ -1,7 +1,10 @@
 package util;
 
+import exceptions.ExportException;
 import exceptions.InvalidAnswerException;
 import exceptions.RegistrationException;
+import exceptions.UserNotFoundException;
+import exceptions.WrongPasswordException;
 import models.MenuPayload;
 import models.Product;
 import models.PurchasePayload;
@@ -26,7 +29,11 @@ public final class Utils {
 
     public static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
 
-    public static User displayLoginScreen(Scanner scanner, List<User> knownUsers) {
+    public static User displayLoginScreen(Scanner scanner, List<User> knownUsers)
+            throws RegistrationException,
+            UserNotFoundException,
+            WrongPasswordException,
+            InvalidAnswerException {
         boolean newUser = isNewUser(scanner);
 
         User user;
@@ -43,7 +50,7 @@ public final class Utils {
                                           Product[] products,
                                           List<User> knownUsers,
                                           List<Product> basket,
-                                          PurchasePayload[] sessionPurchases) {
+                                          PurchasePayload[] sessionPurchases) throws InvalidAnswerException, ExportException, RegistrationException {
         MenuPayload menuPayload = new MenuPayload();
         menuPayload.setLoggedIn(true);
         menuPayload.setProducts(products);
@@ -128,7 +135,7 @@ public final class Utils {
         }
     }
 
-    private static LocalDate handleReadDate(Scanner scanner, String fromTo) {
+    private static LocalDate handleReadDate(Scanner scanner, String fromTo) throws InvalidAnswerException {
         System.out.println("Do you have preferences for '" + fromTo + "' date? (Y/n)");
         boolean isFromToPresent = RegexValidator.handleYesNo(scanner.next());
         LocalDate fromToLocalDate = fromTo.equals("from") ? LocalDate.of(1900, 1, 1) : LocalDate.now();
@@ -147,14 +154,14 @@ public final class Utils {
         users.forEach(System.out::println);
     }
 
-    private static boolean isNewUser(Scanner scanner) {
+    private static boolean isNewUser(Scanner scanner) throws InvalidAnswerException {
         System.out.println("Do you have an account? (Y/n)");
 
         String next = scanner.next();
         return RegexValidator.handleYesNo(next);
     }
 
-    private static User displayNewUserScreen(Scanner scanner, List<User> knownUsers) {
+    private static User displayNewUserScreen(Scanner scanner, List<User> knownUsers) throws RegistrationException {
         User user = RegisterService.pickUserName(scanner, knownUsers);
         if (user == null) {
             throw new RegistrationException("Chosen usernames already persent in database " +
@@ -166,7 +173,7 @@ public final class Utils {
         return user;
     }
 
-    private static User displayAlreadyExistingUserScreen(Scanner scanner, List<User> knownUsers) {
+    private static User displayAlreadyExistingUserScreen(Scanner scanner, List<User> knownUsers) throws WrongPasswordException, UserNotFoundException {
         System.out.println("Please insert your username:");
 
         String userName = scanner.next();

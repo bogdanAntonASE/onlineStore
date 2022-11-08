@@ -1,4 +1,5 @@
 import exceptions.BaseException;
+import exceptions.InvalidAnswerException;
 import exceptions.RegistrationException;
 import exceptions.UserNotFoundException;
 import exceptions.WrongPasswordException;
@@ -35,6 +36,7 @@ public class Main {
     public static void main(String[] args) {
 
         System.out.println("Welcome to our Online Shop!");
+
         while (isWillingToContinue) {
             User user;
             try {
@@ -67,7 +69,12 @@ public class Main {
             }
 
             System.out.println("Logout successful, would you like to sign in again? (Y/n)");
-            isWillingToContinue = RegexValidator.handleYesNo(scanner.next());
+            try {
+                isWillingToContinue = RegexValidator.handleYesNo(scanner.next());
+            } catch (InvalidAnswerException e) {
+                System.out.println("Invalid answer! Proceeding to the closing app process...");
+                isWillingToContinue = false;
+            }
         }
 
         System.out.println("Closing the app...");

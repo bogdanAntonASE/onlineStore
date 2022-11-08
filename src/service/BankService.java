@@ -1,5 +1,6 @@
 package service;
 
+import exceptions.InvalidAnswerException;
 import models.MenuPayload;
 import models.Product;
 import models.PurchasePayload;
@@ -25,7 +26,7 @@ public final class BankService {
                                      List<Product> basket,
                                      Product[] products,
                                      PurchasePayload[] sessionPurchases,
-                                     MenuPayload menuPayload) {
+                                     MenuPayload menuPayload) throws InvalidAnswerException {
         System.out.println("The total price for your products is: " + getTotalPrice(basket));
         System.out.println("Are your sure you want to proceed? (Y/n)");
 

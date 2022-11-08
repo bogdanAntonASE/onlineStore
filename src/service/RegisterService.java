@@ -51,7 +51,7 @@ public final class RegisterService {
         return !result.getUserName().isEmpty() ? result : null;
     }
 
-    public static void pickPassword(Scanner scanner, User user) {
+    public static void pickPassword(Scanner scanner, User user) throws RegistrationException {
         System.out.println("Please choose a password. At least 8 chars (one number and a capital letter).");
         //Console console = System.console();
 
@@ -80,7 +80,7 @@ public final class RegisterService {
 
     private RegisterService() {}
 
-    public static boolean changePassword(Scanner scanner, User user) {
+    public static boolean changePassword(Scanner scanner, User user) throws RegistrationException {
         System.out.println("Please introduce your password again:");
         String oldPassword = scanner.next();
 

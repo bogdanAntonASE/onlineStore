@@ -40,7 +40,7 @@ public class DatabaseService {
         }
     }
 
-    public static void initializeUsersList(List<User> users) {
+    public static void initializeUsersList(List<User> users) throws PersistException {
         File database = new File(USERS_DB);
         if (database.isFile() && database.length() != 0) {
             try (ObjectInputStream inputStream =
@@ -57,7 +57,7 @@ public class DatabaseService {
         }
     }
 
-    public static Product[] initializeProductsArray(Product[] products) {
+    public static Product[] initializeProductsArray(Product[] products) throws PersistException {
         File database = new File(PRODUCTS_DB);
         if (database.isFile() && database.length() != 0) {
             try (ObjectInputStream inputStream =
@@ -82,7 +82,7 @@ public class DatabaseService {
         return products;
     }
 
-    public static Product[] addNewProduct(Scanner scanner, Product[] products) {
+    public static Product[] addNewProduct(Scanner scanner, Product[] products) throws InvalidAnswerException {
         Product product = new Product();
         System.out.println("Please insert the name of the product (at least 3 letters, no numbers allowed):");
         String productName = scanner.next();

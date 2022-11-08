@@ -1,8 +1,8 @@
 package exceptions;
 
-public abstract class BaseException extends RuntimeException {
+public abstract class BaseException extends Exception {
 
-    public BaseException(String message) {
+    protected BaseException(String message) {
         super(message);
     }
 }
