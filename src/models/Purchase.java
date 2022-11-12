@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-public class PurchasePayload extends BaseDto implements Serializable {
+public class Purchase extends BaseDao implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1234567L;
@@ -44,7 +44,7 @@ public class PurchasePayload extends BaseDto implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PurchasePayload that = (PurchasePayload) o;
+        Purchase that = (Purchase) o;
 
         if (!Objects.equals(username, that.username)) return false;
         if (!Objects.equals(productList, that.productList)) return false;

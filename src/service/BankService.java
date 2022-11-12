@@ -1,12 +1,12 @@
 package service;
 
 import exceptions.InvalidAnswerException;
-import models.MenuPayload;
+import dto.MenuPayload;
 import models.Product;
-import models.PurchasePayload;
+import models.Purchase;
 import models.User;
+import util.RegexValidator;
 
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
@@ -25,7 +25,7 @@ public final class BankService {
                                      User user,
                                      List<Product> shoppingCart,
                                      Product[] products,
-                                     PurchasePayload[] sessionPurchases,
+                                     Purchase[] sessionPurchases,
                                      MenuPayload menuPayload) throws InvalidAnswerException {
         System.out.println("The total price for your products is: " + getTotalPrice(shoppingCart));
         System.out.println("Are your sure you want to proceed? (Y/n)");
@@ -39,12 +39,12 @@ public final class BankService {
             if (isAccepted) {
                 System.out.println("The transaction has been completed successfully!");
 
-                PurchasePayload purchasePayload = new PurchasePayload();
-                purchasePayload.setUsername(user.getUserName());
-                purchasePayload.setProductList(List.copyOf(shoppingCart));
-                purchasePayload.setCreationDate(LocalDateTime.now());
+                Purchase purchase = new Purchase();
+                purchase.setUsername(user.getUserName());
+                purchase.setProductList(List.copyOf(shoppingCart));
+                purchase.setCreationDate(LocalDateTime.now());
 
-                menuPayload.setSessionPurchases(DatabaseService.enlargeArrayAndAddPurchase(sessionPurchases, purchasePayload));
+                menuPayload.setSessionPurchases(DatabaseService.enlargeArrayAndAddPurchase(sessionPurchases, purchase));
                 DatabaseService.updateStocks(products, shoppingCart);
                 shoppingCart.clear();
                 user.setCredit(user.getCredit() - totalPrice);

@@ -1,4 +1,4 @@
-package service;
+package util;
 
 import exceptions.InvalidAnswerException;
 import java.util.regex.Pattern;

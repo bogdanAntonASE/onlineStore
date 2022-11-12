@@ -3,12 +3,11 @@ package models;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.util.Objects;
 
 import static util.Utils.DECIMAL_FORMAT;
 
-public class User implements Serializable {
+public class User extends BaseDao implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1234567L;

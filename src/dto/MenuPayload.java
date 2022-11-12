@@ -1,9 +1,12 @@
-package models;
+package dto;
+
+import models.Product;
+import models.Purchase;
 
 public class MenuPayload {
 
     private Product[] products;
-    private PurchasePayload[] sessionPurchases;
+    private Purchase[] sessionPurchases;
     private boolean isLoggedIn;
 
     public Product[] getProducts() {
@@ -22,11 +25,11 @@ public class MenuPayload {
         isLoggedIn = loggedIn;
     }
 
-    public PurchasePayload[] getSessionPurchases() {
+    public Purchase[] getSessionPurchases() {
         return sessionPurchases;
     }
 
-    public void setSessionPurchases(PurchasePayload[] sessionPurchases) {
+    public void setSessionPurchases(Purchase[] sessionPurchases) {
         this.sessionPurchases = sessionPurchases;
     }
 }

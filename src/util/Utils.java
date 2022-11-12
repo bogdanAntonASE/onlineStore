@@ -5,15 +5,14 @@ import exceptions.InvalidAnswerException;
 import exceptions.RegistrationException;
 import exceptions.UserNotFoundException;
 import exceptions.WrongPasswordException;
-import models.MenuPayload;
+import dto.MenuPayload;
 import models.Product;
-import models.PurchasePayload;
+import models.Purchase;
 import models.User;
 import service.BankService;
 import service.ShoppingCartService;
 import service.DatabaseService;
 import service.ExportService;
-import service.RegexValidator;
 import service.RegisterService;
 
 import java.text.DecimalFormat;
@@ -50,7 +49,7 @@ public final class Utils {
                                           Product[] products,
                                           List<User> knownUsers,
                                           List<Product> shoppingCart,
-                                          PurchasePayload[] sessionPurchases) throws InvalidAnswerException, ExportException, RegistrationException {
+                                          Purchase[] sessionPurchases) throws InvalidAnswerException, ExportException, RegistrationException {
         MenuPayload menuPayload = new MenuPayload();
         menuPayload.setLoggedIn(true);
         menuPayload.setProducts(products);

@@ -3,8 +3,9 @@ package service;
 import exceptions.InvalidAnswerException;
 import exceptions.PersistException;
 import models.Product;
-import models.PurchasePayload;
+import models.Purchase;
 import models.User;
+import util.RegexValidator;
 import util.Utils;
 
 import java.io.*;
@@ -241,15 +242,15 @@ public class DatabaseService {
      * @param purchase purchase to be added to the array
      * @return new array of purchases
      */
-    public static PurchasePayload[] enlargeArrayAndAddPurchase(PurchasePayload[] sessionPurchases, PurchasePayload purchase) {
-        PurchasePayload[] tempPurchases = new PurchasePayload[sessionPurchases.length];
+    public static Purchase[] enlargeArrayAndAddPurchase(Purchase[] sessionPurchases, Purchase purchase) {
+        Purchase[] tempPurchases = new Purchase[sessionPurchases.length];
         int k = 0;
-        for (PurchasePayload purchasePayload: sessionPurchases) {
+        for (Purchase purchasePayload: sessionPurchases) {
             tempPurchases[k++] = purchasePayload;
         }
-        sessionPurchases = new PurchasePayload[tempPurchases.length + 1];
+        sessionPurchases = new Purchase[tempPurchases.length + 1];
         k = 0;
-        for (PurchasePayload purchasePayload: tempPurchases) {
+        for (Purchase purchasePayload: tempPurchases) {
             sessionPurchases[k++] = purchasePayload;
         }
         sessionPurchases[sessionPurchases.length - 1] = purchase;
@@ -261,16 +262,16 @@ public class DatabaseService {
      * @param sessionPurchases already existing purchases, if any
      * @param isAdmin flag if user is admin
      */
-    public static void persistPurchases(PurchasePayload[] sessionPurchases, boolean isAdmin) {
+    public static void persistPurchases(Purchase[] sessionPurchases, boolean isAdmin) {
         if (isAdmin) {
             System.out.println("---Persisting purchases to textfile " + PURCHASES_DB + "...");
         }
         try(FileWriter fileWriter = new FileWriter(PURCHASES_DB, true)) {
-            for (PurchasePayload purchasePayload: sessionPurchases) {
+            for (Purchase purchase : sessionPurchases) {
 
-                fileWriter.append(purchasePayload.getUsername()).append("; ");
-                fileWriter.append(purchasePayload.getProductList().toString()).append("; ");
-                fileWriter.append(purchasePayload.getCreationDate().toString()).append("\n");
+                fileWriter.append(purchase.getUsername()).append("; ");
+                fileWriter.append(purchase.getProductList().toString()).append("; ");
+                fileWriter.append(purchase.getCreationDate().toString()).append("\n");
             }
         } catch (IOException exception) {
             exception.printStackTrace();

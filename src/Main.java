@@ -1,11 +1,11 @@
 import exceptions.BaseException;
 import exceptions.InvalidAnswerException;
-import models.MenuPayload;
+import dto.MenuPayload;
 import models.Product;
-import models.PurchasePayload;
+import models.Purchase;
 import models.User;
 import service.DatabaseService;
-import service.RegexValidator;
+import util.RegexValidator;
 import util.Utils;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class Main {
     private static Product[] products = new Product[]{};
     private static final Scanner scanner = new Scanner(System.in);
     private static final List<Product> shoppingCart = new ArrayList<>();
-    private static PurchasePayload[] sessionPurchases = new PurchasePayload[]{};
+    private static Purchase[] sessionPurchases = new Purchase[]{};
     private static boolean isWillingToContinue = true;
     private static boolean isAdmin = true;
 
@@ -67,6 +67,9 @@ public class Main {
             System.out.println("Logout successful, would you like to sign in again? (Y/n)");
             try {
                 isWillingToContinue = RegexValidator.handleYesNo(scanner.next());
+                if (isWillingToContinue) {
+                    sessionPurchases = new Purchase[]{};
+                }
             } catch (InvalidAnswerException e) {
                 System.out.println("Invalid answer! Proceeding to the closing app process...");
                 isWillingToContinue = false;

@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import static util.Utils.DECIMAL_FORMAT;
 
-public class Product extends BaseDto implements Serializable {
+public class Product extends BaseDao implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1234567L;

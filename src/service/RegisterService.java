@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public final class RegisterService {
 
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$");
-    private static final Pattern USER_PATTERN = Pattern.compile("[a-zA-Z]{3,}");
+    private static final Pattern USER_PATTERN = Pattern.compile("[a-zA-Z0-9]{3,}");
 
     public static User pickUserName(Scanner scanner, List<User> knownUsers) {
         System.out.println("Please choose an username (at least 3 characters):");
@@ -25,7 +25,7 @@ public final class RegisterService {
         int noOfTries = 3;
         int k = 0;
 
-        while (k++ < noOfTries) {
+        while (k++ < noOfTries + 1) {
             if (!USER_PATTERN.matcher(userName).matches()) {
                 System.out.println("Your username does not have at least 3 characters... Try again " +
                         "(try " + k + " out of " + noOfTries + "):");
@@ -60,7 +60,7 @@ public final class RegisterService {
 
         //String password = String.valueOf(console.readPassword());
         String password = scanner.next();
-        while (k++ < noOfTries) {
+        while (k++ < noOfTries + 1) {
             if (!PASSWORD_PATTERN.matcher(password).matches()) {
                 System.out.println("Wrong format. At least 8 chars (one number and a capital letter)." +
                         " (try " + k + " out of " + noOfTries + ")");
